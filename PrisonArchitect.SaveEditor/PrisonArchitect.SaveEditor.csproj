@@ -36,6 +36,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\SaveDocumentConverter.cs" />
+    <Compile Include="Mutator\ISaveDocumentMutator.cs" />
+    <Compile Include="Mutator\MapShifter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SaveElements\SaveDocument.cs" />

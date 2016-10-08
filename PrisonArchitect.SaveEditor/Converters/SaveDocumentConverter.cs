@@ -126,7 +126,7 @@ namespace PrisonArchitect.SaveEditor.Converters
         {
             foreach (var pair in pairs)
             {
-                persistedParts.Add($"{pair.Key} {pair.Value}");
+                persistedParts.Add($"{Quoted(pair.Key)} {Quoted(pair.Value)}");
             }
         }
 
@@ -142,16 +142,20 @@ namespace PrisonArchitect.SaveEditor.Converters
         private static void PersistSection(SaveSection section,
                                            ICollection<string> persistedParts)
         {
-            var sectionName = section.Name.Contains(" ") ? $"\"{section.Name}\""
-                                                         : section.Name;
+            
 
-            persistedParts.Add($"BEGIN {sectionName}");
+            persistedParts.Add($"BEGIN {Quoted(section.Name)}");
 
             PersistPairs(section.InnerPairs, persistedParts);
 
             PersistSections(section.InnerSections, persistedParts);
 
             persistedParts.Add("END");
+        }
+
+        private static string Quoted(string part)
+        {
+            return part.Contains(" ") ? $"\"{part}\"" : part;
         }
 
         private sealed class ParseResult
