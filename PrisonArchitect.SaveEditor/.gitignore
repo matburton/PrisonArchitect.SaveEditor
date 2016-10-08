@@ -1,0 +1,12 @@
+# Windows
+Thumbs.db
+
+# Visual Studio builds
+bin/
+obj/
+
+# Visual Studio config
+.vs/
+
+# ReSharper
+*.user
