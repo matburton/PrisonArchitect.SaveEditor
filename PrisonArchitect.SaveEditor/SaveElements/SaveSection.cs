@@ -5,11 +5,11 @@ using System.Linq;
 
 namespace PrisonArchitect.SaveEditor.SaveElements
 {
-    internal sealed class RawSaveSection
+    internal sealed class SaveSection
     {
-        public RawSaveSection(string name,
-                              IEnumerable<RawSaveSection> innerSections,
-                              IEnumerable<SavePair> innerValues)
+        public SaveSection(string name,
+                           IEnumerable<SaveSection> innerSections,
+                           IEnumerable<SavePair> innerPairs)
         {
             if (name == null) throw new ArgumentNullException(nameof(name));
 
@@ -18,16 +18,16 @@ namespace PrisonArchitect.SaveEditor.SaveElements
                 throw new ArgumentNullException(nameof(innerSections));
             }
 
-            if (innerValues == null)
+            if (innerPairs == null)
             {
-                throw new ArgumentNullException(nameof(innerValues));
+                throw new ArgumentNullException(nameof(innerPairs));
             }
 
             Name = name;
 
             InnerSections = innerSections.ToArray();
 
-            InnerValues = innerValues.ToArray();
+            InnerPairs = innerPairs.ToArray();
 
             if (InnerSections.Contains(null))
             {
@@ -35,16 +35,16 @@ namespace PrisonArchitect.SaveEditor.SaveElements
                                             nameof(innerSections));
             }
 
-            if (InnerValues.Contains(null))
+            if (InnerPairs.Contains(null))
             {
-                throw new ArgumentException("Contained null", nameof(innerValues));
+                throw new ArgumentException("Contained null", nameof(innerPairs));
             }
         }
 
         public string Name { get; }
 
-        public IReadOnlyCollection<RawSaveSection> InnerSections { get; }
+        public IReadOnlyCollection<SaveSection> InnerSections { get; }
 
-        public IReadOnlyCollection<SavePair> InnerValues { get; }
+        public IReadOnlyCollection<SavePair> InnerPairs { get; }
     }
 }
