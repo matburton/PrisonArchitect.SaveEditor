@@ -10,3 +10,4 @@ obj/
 
 # ReSharper
 *.user
+_ReSharper.Caches

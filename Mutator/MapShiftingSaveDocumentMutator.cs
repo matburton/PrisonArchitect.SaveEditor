@@ -30,8 +30,8 @@ namespace PrisonArchitect.SaveEditor.Mutator
             outerPairs["NumCellsX"] = (int.Parse(outerPairs["NumCellsX"]) + m_LengthX).ToString();
             outerPairs["NumCellsY"] = (int.Parse(outerPairs["NumCellsY"]) + m_LengthY).ToString();
 
-            outerPairs["OriginW"] = outerPairs["NumCellsX"];
-            outerPairs["OriginH"] = outerPairs["NumCellsY"];
+            outerPairs["OriginW"] = outerPairs["OriginW"] + m_LengthX;
+            outerPairs["OriginH"] = outerPairs["OriginH"] + m_LengthY;
 
             return new SaveDocument
                 (outerPairs.Select(p => new SavePair(p.Key, p.Value)),
