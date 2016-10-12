@@ -38,6 +38,7 @@
     <Compile Include="Converters\SaveDocumentConverter.cs" />
     <Compile Include="Mutator\ISaveDocumentMutator.cs" />
     <Compile Include="Mutator\MapShiftingSaveDocumentMutator.cs" />
+    <Compile Include="Mutator\ObjectDeletingSaveDocumentMutator.cs" />
     <Compile Include="Mutator\WingCloneingSaveDocumentMutator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
