@@ -10,13 +10,21 @@ namespace PrisonArchitect.SaveEditor.Mutator
 {
     internal sealed class WingCloneingSaveDocumentMutator : ISaveDocumentMutator
     {
-        public WingCloneingSaveDocumentMutator(int cloneFromX,
+        public WingCloneingSaveDocumentMutator(SaveDocument sourceSaveDocument,
+                                               int cloneFromX,
                                                int cloneFromY,
                                                int cloneWidth,
                                                int cloneHeight,
                                                int cloneToX,
                                                int cloneToY)
         {
+            if (sourceSaveDocument == null)
+            {
+                throw new ArgumentNullException(nameof(sourceSaveDocument));
+            }
+
+            m_SourceSaveDocument = sourceSaveDocument;
+
             m_CloneFromX  = cloneFromX;
             m_CloneFromY  = cloneFromY;
             m_CloneWidth  = cloneWidth;
@@ -146,13 +154,13 @@ namespace PrisonArchitect.SaveEditor.Mutator
                 (saveDocument.OuterPairs.Single(p => p.Key == "ObjectId.next")
                                         .Value);
 
-            var section = saveDocument.Sections.Single
+            var sourceSaveDocument = m_SourceSaveDocument.Sections.Single
                 (s => s.Name == "Objects");
 
             var offsetX = m_CloneToX - m_CloneFromX;
             var offsetY = m_CloneToY - m_CloneFromY;
 
-            var newInnerSections = section.InnerSections
+            var newInnerSections = sourceSaveDocument.InnerSections
                 .Select(GetObjectSectionWithCoordinates)
                 .Where(r => IsInArea(r, m_CloneFromX, m_CloneFromY))
                 .Where(r => !m_ExcludedObjectTypes.Contains(r.Section.InnerPairs.Single(p => p.Key == "Type").Value))
@@ -193,7 +201,7 @@ namespace PrisonArchitect.SaveEditor.Mutator
 
             saveDocument = RemoveObjectsInCloneToArea(saveDocument);
 
-            section = saveDocument.Sections.Single(s => s.Name == "Objects");
+            var section = saveDocument.Sections.Single(s => s.Name == "Objects");
 
             var newSection = new SaveSection
                 ("Objects",
@@ -212,14 +220,18 @@ namespace PrisonArchitect.SaveEditor.Mutator
         private SaveDocument CloneAreaInSection(string sectionName,
                                                 SaveDocument saveDocument)
         {
+            var sourceSaveDocument = m_SourceSaveDocument.Sections.Single
+                (s => s.Name == sectionName);
+
             var section = saveDocument.Sections.Single
                 (s => s.Name == sectionName);
 
             var offsetX = m_CloneToX - m_CloneFromX;
             var offsetY = m_CloneToY - m_CloneFromY;
 
-            var newInnerSections = section.InnerSections
+            var newInnerSections = sourceSaveDocument.InnerSections
                 .Select(GetContentsWithCoordinates)
+                .Where(r => r != null)
                 .Where(r => IsInArea(r, m_CloneFromX, m_CloneFromY))
                 .Select(r => new SaveSection($"{r.X + offsetX} {r.Y + offsetY}",
                                              r.InnerSections,
@@ -242,8 +254,7 @@ namespace PrisonArchitect.SaveEditor.Mutator
 
             if (nameParts.Length != 2)
             {
-                throw new Exception
-                    ("More than one cell section name part");
+                return null;
             }
 
             return new SectionContentsWithCoordinates
@@ -349,6 +360,8 @@ namespace PrisonArchitect.SaveEditor.Mutator
         {
             public SaveSection Section { get; set; }
         }
+
+        private readonly SaveDocument m_SourceSaveDocument;
 
         private readonly int m_CloneFromX;
         private readonly int m_CloneFromY;
